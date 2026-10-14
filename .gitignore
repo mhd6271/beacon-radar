@@ -1,0 +1,16 @@
+# Laufzeitdaten – NICHT versionieren
+beacon_radar_history.jsonl
+beacon_radar_cfg.json
+beacon_radar_pin.json
+beacon_radar_blacklist.json
+beacon_movement.db
+
+# Python / venv
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
