@@ -1,4 +1,4 @@
-# BLE-Finder (beacon_radar)
+# Beacon-Radar
 
 Ein kleiner **Live-BLE-Radar** im Browser. Scannt Bluetooth-Low-Energy-Geräte
 (inkl. iBeacons) und zeigt sie nach **Signalstärke (Nähe)** an – ohne

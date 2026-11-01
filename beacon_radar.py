@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-beacon_radar.py — Einfacher Live-BLE-Finder im Browser
+beacon_radar.py — Beacon-Radar: einfacher Live-BLE-Radar im Browser
 
 Scannt BLE-Geräte (inkl. iBeacons) und zeigt sie nach SIGNALSTÄRKE an —
 ohne unzuverlässige Meter-Schätzung, ohne Kalibrieren.
@@ -42,7 +42,7 @@ try:
 except ImportError:
     raise SystemExit("Fehlt: bleak  ->  pip install bleak")
 
-VERSION = "35 (Zonen-Ringe auch per Touch ziehen)"
+VERSION = "36 (einheitlicher Name Beacon-Radar)"
 APPLE_ID = 0x004C
 STATE = {}
 STATE_LOCK = threading.Lock()
@@ -395,7 +395,7 @@ HTML = r"""<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0e1116">
-<title>BLE-Finder</title>
+<title>Beacon-Radar</title>
 <style>
   :root{--bg:#0e1116;--panel:#161b22;--line:#30363d;--txt:#e6edf3;--muted:#8b949e;
     --accent:#58a6ff;--warn:#d29922;--hot:#f85149;--cold:#58a6ff;--me:#f0b429;--ok:#3fb950}
@@ -430,10 +430,10 @@ HTML = r"""<!doctype html>
 </head>
 <body>
 <header>
-  <h1>📡 BLE-Finder <span class="muted" id="count"></span></h1>
+  <h1>📡 Beacon-Radar <span class="muted" id="count"></span></h1>
   <button id="sound" title="Hinweiston an/aus">🔔</button>
   <span class="muted">Klick ein Gerät zum Anheften/Verfolgen. Ton bei Eintritt in „sehr nah".</span>
-  <span class="muted" style="margin-left:auto">Build 35</span>
+  <span class="muted" style="margin-left:auto">Build 36</span>
 </header>
 
 <div id="blacklistbar" style="padding:5px 16px;font-size:12px;color:var(--muted);border-bottom:1px solid var(--line);display:none"></div>
@@ -917,7 +917,7 @@ def main():
     threading.Thread(target=ble_loop, daemon=True).start()
     threading.Thread(target=move_flush_loop, daemon=True).start()
     srv = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
-    print(f"BLE-Finder läuft (Build {VERSION}):  http://localhost:{args.port}")
+    print(f"Beacon-Radar läuft (Build {VERSION}):  http://localhost:{args.port}")
     print("Scanne BLE … (STRG+C beendet)")
     try:
         srv.serve_forever()
