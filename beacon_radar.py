@@ -42,7 +42,7 @@ try:
 except ImportError:
     raise SystemExit("Fehlt: bleak  ->  pip install bleak")
 
-VERSION = "34 (Absturz-Härtung CoreBluetooth-Callback)"
+VERSION = "35 (Zonen-Ringe auch per Touch ziehen)"
 APPLE_ID = 0x004C
 STATE = {}
 STATE_LOCK = threading.Lock()
@@ -433,7 +433,7 @@ HTML = r"""<!doctype html>
   <h1>📡 BLE-Finder <span class="muted" id="count"></span></h1>
   <button id="sound" title="Hinweiston an/aus">🔔</button>
   <span class="muted">Klick ein Gerät zum Anheften/Verfolgen. Ton bei Eintritt in „sehr nah".</span>
-  <span class="muted" style="margin-left:auto">Build 34</span>
+  <span class="muted" style="margin-left:auto">Build 35</span>
 </header>
 
 <div id="blacklistbar" style="padding:5px 16px;font-size:12px;color:var(--muted);border-bottom:1px solid var(--line);display:none"></div>
@@ -460,7 +460,7 @@ HTML = r"""<!doctype html>
     <div class="muted" style="font-size:12px;margin-top:8px;max-width:400px">
       Mitte = du (Empfänger). Je näher ein Punkt an der Mitte, desto
       <b>stärker das Signal</b> (= näher). Der Winkel ist bedeutungslos.
-      <br>Tipp: Die <b>Zonen-Ringe mit der Maus ziehen</b> (rein/raus), um die Zonen zu verändern.
+      <br>Tipp: Die <b>Zonen-Ringe mit Maus oder Finger ziehen</b> (rein/raus), um die Zonen zu verändern.
     </div>
   </div>
   <div class="card" style="flex:1;min-width:240px">
@@ -610,25 +610,37 @@ function evtRadius(e){
   const b=RC.getBoundingClientRect();
   const x=(e.clientX-b.left)*(RC.width/b.width), y=(e.clientY-b.top)*(RC.height/b.height);
   const cx=RC.width/2, cy=RC.height/2;
-  return {r:Math.hypot(x-cx,y-cy), maxR:Math.min(RC.width,RC.height)/2-16};
+  return {r:Math.hypot(x-cx,y-cy), maxR:Math.min(RC.width,RC.height)/2-16, scale:RC.width/b.width};
 }
 let dragKey=null;
-RC.addEventListener('mousedown',e=>{
-  const {r,maxR}=evtRadius(e); let best=null,bd=14;
+function dragStart(e,tolPx){   // tolPx = Fangbereich in Bildschirm-Pixeln (Finger braucht mehr)
+  const {r,maxR,scale}=evtRadius(e); let best=null,bd=tolPx*scale;
   ZKEYS.forEach(k=>{ const rr=(1-nearFrac(TH[k]))*maxR; const d=Math.abs(rr-r); if(d<bd){bd=d;best=k;} });
   dragKey=best;
-});
-window.addEventListener('mousemove',e=>{
-  if(!dragKey) return;
+  return !!best;
+}
+function dragMove(e){
   const {r,maxR}=evtRadius(e); const v=radiusToRssi(r,maxR);
   const i=ZKEYS.indexOf(dragKey);
   const upper = i>0 ? TH[ZKEYS[i-1]]-3 : -40;   // nicht über den inneren Ring
   const lower = i<3 ? TH[ZKEYS[i+1]]+3 : -99;   // nicht unter den äußeren Ring
   TH[dragKey]=Math.max(lower,Math.min(upper,v)); drawRadar();
-});
-window.addEventListener('mouseup',()=>{
+}
+function dragEnd(){
   if(dragKey){ try{localStorage.setItem('th',JSON.stringify(TH));}catch(e){} dragKey=null; }
-});
+}
+RC.addEventListener('mousedown',e=>dragStart(e,14));
+window.addEventListener('mousemove',e=>{ if(dragKey) dragMove(e); });
+window.addEventListener('mouseup',dragEnd);
+// Touch: nur wenn ein Ring getroffen wird, das Scrollen der Seite unterdrücken
+RC.addEventListener('touchstart',e=>{
+  if(e.touches.length===1 && dragStart(e.touches[0],24)) e.preventDefault();
+},{passive:false});
+RC.addEventListener('touchmove',e=>{
+  if(dragKey){ e.preventDefault(); dragMove(e.touches[0]); }
+},{passive:false});
+RC.addEventListener('touchend',dragEnd);
+RC.addEventListener('touchcancel',dragEnd);
 
 async function pin(key){
   PIN=key;

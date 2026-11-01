@@ -12,8 +12,8 @@ Bluetooth-Adapter ansprechen kann.
 
 - **Radar-Ansicht**: Mitte = du (Empfänger). Je näher ein Punkt an der Mitte,
   desto stärker das Signal. Der Winkel ist bedeutungslos.
-- **Zonen** (sehr nah / nah / mittel / weit) – die Ringe lassen sich mit der
-  Maus ziehen und werden lokal gespeichert.
+- **Zonen** (sehr nah / nah / mittel / weit) – die Ringe lassen sich mit Maus
+  oder Finger ziehen und werden lokal gespeichert.
 - **Verfolgen**: ein Gerät anklicken → großer Balken + 🔥 wärmer / ❄️ kälter,
   um es physisch zu finden.
 - **Annäherungs-Alarm**: Hinweiston + kurzes Aufblitzen, wenn ein Gerät die
