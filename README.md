@@ -68,3 +68,7 @@ ein grober Indikator, keine Ortung.
 Alles läuft lokal. Laufzeitdateien (Verlauf, Bewegungs-DB, Pin/Blacklist) werden
 neben dem Skript angelegt und sind per `.gitignore` von der Versionierung
 ausgenommen.
+
+## Lizenz
+
+[MIT](LICENSE) © 2026 Max Mühlbronner
